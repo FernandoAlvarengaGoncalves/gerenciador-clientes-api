@@ -1,41 +1,80 @@
-Gerenciador de Clientes - API
-Este projeto é uma aplicação fullstack para gerenciar clientes (cadastro, edição, listagem e exclusão), utilizando Node.js com Express no backend, MySQL como banco de dados, HTML e Bootstrap no frontend, e Axios para realizar as requisições HTTP.
+# 💼 Gerenciador de Clientes - API
 
-Para executar o projeto localmente, siga os passos abaixo:
+Este projeto é uma aplicação fullstack para gerenciar clientes (**cadastro**, **edição**, **listagem** e **exclusão**), utilizando:
 
-1. Clone este repositório com o comando: git clone https://github.com/FernandoAlvarengaGoncalves/gerenciador-clientes-api.git e entre na pasta do projeto com cd gerenciador-clientes-api.
+-  Node.js com Express no backend  
+-  MySQL como banco de dados  
+-  HTML + Bootstrap no frontend  
+-  Axios para requisições HTTP  
 
-2. Instale as dependências com o comando: npm install.
+---
 
-3. Configure o banco de dados. Acesse seu MySQL (pode ser via Workbench, terminal ou phpMyAdmin) e execute os comandos abaixo:
+##  Como executar o projeto localmente
 
+### 1. Clone este repositório:
+
+```bash
+git clone https://github.com/FernandoAlvarengaGoncalves/gerenciador-clientes-api.git
+cd gerenciador-clientes-api
+```
+
+### 2. Instale as dependências:
+
+```bash
+npm install
+```
+
+### 3. Configure o banco de dados:
+
+Acesse seu MySQL (via Workbench, terminal ou phpMyAdmin) e execute os comandos abaixo:
+
+```sql
 CREATE DATABASE DATABASE10;
 
 USE DATABASE10;
 
 CREATE TABLE clientes (
-id INT AUTO_INCREMENT PRIMARY KEY,
-nome VARCHAR(255),
-rg VARCHAR(20),
-cpf VARCHAR(20),
-idade INT
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(255),
+  rg VARCHAR(20),
+  cpf VARCHAR(20),
+  idade INT
 );
+```
 
-4. Inicie o servidor com o comando: npm start. O servidor será iniciado na porta 3019.
+### 4. Inicie o servidor:
 
-5. Para acessar a interface do sistema, abra o arquivo index.html no navegador. Você também pode utilizar a extensão Live Server no VSCode para facilitar o processo.
+```bash
+npm start
+```
 
-As rotas da API disponíveis são:
+> O servidor será iniciado na porta `3019`.
 
-GET /api/clientes → Lista todos os clientes
+### 5. Acesse a interface:
 
-POST /api/clientes → Cadastra um novo cliente
+Abra o arquivo `index.html` no navegador.  
+Se preferir, use a extensão **Live Server** do VSCode para facilitar.
 
-PUT /api/clientes/:id → Atualiza um cliente existente
+---
 
-DELETE /api/clientes/:id → Remove um cliente do sistema
+##  Rotas da API
 
-Autor: Fernando Alvarenga Gonçalves
-GitHub: https://github.com/FernandoAlvarengaGoncalves
+| Método | Rota                  | Descrição                  |
+|--------|-----------------------|----------------------------|
+| GET    | `/api/clientes`       | Lista todos os clientes    |
+| POST   | `/api/clientes`       | Cadastra um novo cliente   |
+| PUT    | `/api/clientes/:id`   | Atualiza um cliente        |
+| DELETE | `/api/clientes/:id`   | Remove um cliente do sistema |
 
-Este projeto foi desenvolvido para fins acadêmicos e está disponível para uso e aprendizado.
+---
+
+##  Autor
+
+**Fernando Alvarenga Gonçalves**  
+ [GitHub](https://github.com/FernandoAlvarengaGoncalves)
+
+---
+
+##  Licença
+
+Este projeto foi desenvolvido para fins acadêmicos e pessoais e está disponível para uso e aprendizado.
