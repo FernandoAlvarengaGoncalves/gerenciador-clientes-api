@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Clientes</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<style>
+    body {
+        background: linear-gradient(135deg, #d1c4e9, #b39ddb); /* Roxo claro com gradiente */
+        color: #333;
+    }
+    h1 {
+        font-size: 3rem;
+        font-weight: 500;
+    }
+    /* Cor padrão dos botões */
+    .btn-custom {
+        background-color: #6a1b9a; /* Roxo mais escuro */
+        color: #fff;
+        border: none;
+    }
+    .btn-custom:hover {
+        background-color: #4a148c; /* Tom mais escuro para hover */
+        color: #fff;
+    }
+    .btn-custom:active {
+        background-color: #38006b; /* Tom mais escuro ao clicar */
+        color: #fff;
+    }
+
+    /* Estilo para mensagens de erro */
+    .invalid-feedback {
+        display: block;
+    }
+</style>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Ficha Clientes</h1>
+
+        <!-- Formulário para adicionar cliente -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Dados</h5>
+                <form id="clienteForm">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome" required>
+                        <div class="invalid-feedback" id="nomeError">Este campo é obrigatório.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rg" class="form-label">RG</label>
+                        <input type="text" class="form-control" id="rg" required>
+                        <div class="invalid-feedback" id="rgError">Este campo é obrigatório.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpf" required>
+                        <div class="invalid-feedback" id="cpfError">Este campo é obrigatório.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idade" class="form-label">Idade</label>
+                        <input type="number" class="form-control" id="idade" required>
+                        <div class="invalid-feedback" id="idadeError">Este campo é obrigatório.</div>
+                    </div>
+                    <button type="submit" class="btn btn-custom">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabela para listar clientes -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Lista de Clientes</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>RG</th>
+                            <th>CPF</th>
+                            <th>Idade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientesTable">
+                        <!-- Os clientes serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome para ícones -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <!-- Axios para fazer requisições HTTP -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script>
+        const apiUrl = 'http://localhost:3019/api/clientes';
+
+        function loadClientes() {
+            axios.get(apiUrl)
+                .then(response => {
+                    const clientes = response.data;
+                    const clientesTable = document.getElementById('clientesTable');
+                    clientesTable.innerHTML = '';
+                    clientes.forEach(cliente => {
+                        clientesTable.innerHTML += `
+                            <tr>
+                                <td>${cliente.id}</td>
+                                <td>${cliente.nome}</td>
+                                <td>${cliente.rg}</td>
+                                <td>${cliente.cpf}</td>
+                                <td>${cliente.idade}</td>
+                                <td>
+                                    <button class="btn btn-custom btn-sm" onclick="editarCliente(${cliente.id})">
+                                        <i class="fas fa-pencil-alt"></i> Edit
+                                    </button>
+                                    <button class="btn btn-custom btn-sm" onclick="excluirCliente(${cliente.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar clientes:', error));
+        }
+
+        document.getElementById('clienteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const rg = document.getElementById('rg').value;
+            const cpf = document.getElementById('cpf').value;
+            const idade = document.getElementById('idade').value;
+
+            // Limpar mensagens de erro
+            resetErrors();
+
+            // Verificar campos obrigatórios
+            let valid = true;
+
+            if (!nome) {
+                document.getElementById('nomeError').style.display = 'block';
+                valid = false;
+            }
+            if (!rg) {
+                document.getElementById('rgError').style.display = 'block';
+                valid = false;
+            }
+            if (!cpf) {
+                document.getElementById('cpfError').style.display = 'block';
+                valid = false;
+            }
+            if (!idade) {
+                document.getElementById('idadeError').style.display = 'block';
+                valid = false;
+            }
+
+            if (valid) {
+                axios.post(apiUrl, { nome, rg, cpf, idade })
+                    .then(response => {
+                        alert(response.data.message);
+                        loadClientes();
+                        document.getElementById('clienteForm').reset();
+                    })
+                    .catch(error => console.error('Erro ao adicionar cliente:', error));
+            }
+        });
+
+        function resetErrors() {
+            document.getElementById('nomeError').style.display = 'none';
+            document.getElementById('rgError').style.display = 'none';
+            document.getElementById('cpfError').style.display = 'none';
+            document.getElementById('idadeError').style.display = 'none';
+        }
+
+        function editarCliente(id) {
+            axios.get(`${apiUrl}/${id}`)
+                .then(response => {
+                    const cliente = response.data;
+                    const nome = prompt('Nome', cliente.nome);
+                    const rg = prompt('RG', cliente.rg);
+                    const cpf = prompt('CPF', cliente.cpf);
+                    const idade = prompt('Idade', cliente.idade);
+                    if (nome && rg && cpf && idade) {
+                        axios.put(`${apiUrl}/${id}`, { nome, rg, cpf, idade })
+                            .then(response => {
+                                alert(response.data.message);
+                                loadClientes();
+                            })
+                            .catch(error => console.error('Erro ao atualizar cliente:', error));
+                    }
+                })
+                .catch(error => console.error('Erro ao obter cliente:', error));
+        }
+
+        function excluirCliente(id) {
+            if (confirm('Você realmente deseja excluir este cliente?')) {
+                axios.delete(`${apiUrl}/${id}`)
+                    .then(response => {
+                        alert(response.data.message);
+                        loadClientes();
+                    })
+                    .catch(error => console.error('Erro ao excluir cliente:', error));
+            }
+        }
+
+        loadClientes();
+    </script>
+</body>
+</html>
